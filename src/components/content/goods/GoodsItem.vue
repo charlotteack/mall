@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     <!--需要使用vue自带的load监听图片的加载，让scroll的scrollerHeight属性刷新-->
     <img :src="goodsItem.show.img" alt="抱歉，图片暂时无法查看" @load="imageLoad">
     <div class="goods-info">
@@ -24,6 +24,9 @@
     methods: {
       imageLoad() {
         this.$bus.$emit('imageLoaded')
+      },
+      itemClick() {
+        this.$router.push('/detail/' + this.goodsItem.iid)
       }
     }
   }
