@@ -31,7 +31,7 @@
     },
     methods: {
       imageLoad() {
-        //第一张图片加载完成即可认为tabControl的offsetTop可以确定
+        //第一张图片加载完成即可认为tabControl的offsetTop可以确定(每个图片占的高度一样)
         if (!this.isLoad) {
           this.$emit('swiperImageLoad')
           this.isLoad = true
