@@ -1,15 +1,15 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"></detail-nav-bar>
+    <detail-nav-bar class="detail-nav" @navClick="navClick"></detail-nav-bar>
 
-    <scroll class="detail-content">
+    <scroll class="detail-content" ref="scroll">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goodsDetail"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
-      <detail-params-info :param-info="paramsInfo"></detail-params-info>
-      <detail-comment-info :commentInfo="commentInfo"></detail-comment-info>
-      <goods-list :goods="recommends"></goods-list>
+      <detail-params-info :param-info="paramsInfo" ref="param"></detail-params-info>
+      <detail-comment-info :commentInfo="commentInfo" ref="comment"></detail-comment-info>
+      <goods-list :goods="recommends" ref="recommend"></goods-list>
     </scroll>
 
   </div>
@@ -28,6 +28,7 @@
   import Scroll from 'components/common/scroll/Scroll'
 
   import {getDetail,GoodsDetail,Shop,GoodsParam,getRecommend} from "network/detail";
+  import {deBounce} from "../../common/utils";
 
   export default {
     name: "Detail",
@@ -51,7 +52,9 @@
         detailInfo: {},
         paramsInfo: {},
         commentInfo: {},
-        recommends: []
+        recommends: [],
+        topicY: [0],
+        getTopicY: null
       }
     },
     created() {
@@ -74,6 +77,16 @@
         if (data.rate.cRate !== 0) {
           this.commentInfo = data.rate.list[0]
         }
+
+        //全部渲染完之后确定每个主题的滚动位置,但是这样会因为图片加载缓慢而有错误
+        // this.nextTick(() => {
+        //   this.topicY = []
+        //   this.topicY.push(0)
+        //   this.topicY.push(this.$refs.param.$el.offsetTop)
+        //   this.topicY.push(this.$refs.comment.$el.offsetTop)
+        //   this.topicY.push(this.$refs.recommend.$el.offsetTop)
+        // })
+
       })
 
       //推荐数据
@@ -81,10 +94,29 @@
         this.recommends = res.data.list
       })
 
+      this.getTopicY = deBounce(() => {
+        this.topicY = []
+        this.topicY.push(0)
+        this.topicY.push(this.$refs.param.$el.offsetTop)
+        this.topicY.push(this.$refs.comment.$el.offsetTop)
+        this.topicY.push(this.$refs.recommend.$el.offsetTop)
+      },100)
+
     },
+    mounted() {
+      let newRefresh = deBounce(this.$refs.scroll.refresh,100)
+      this.$bus.$on('detailImageLoaded', () => {
+        newRefresh()
+        this.getTopicY()
+      })
+    },
+
     methods: {
       imageLoad() {
-        this.refs.scroll.refresh()
+        this.$refs.scroll.refreshHeight()
+      },
+      navClick(index) {
+        this.$refs.scroll.myScrollTo(0, -this.topicY[index], 500)
       }
     }
   }

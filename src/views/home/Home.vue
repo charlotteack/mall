@@ -56,7 +56,8 @@
         currentType: 'pop',
         isShowBackTop: false,
         tabOffsetTop: 0,
-        isTabFixed: false
+        isTabFixed: false,
+        saveY: 0
       }
     },
     computed: {
@@ -73,10 +74,17 @@
     mounted() {
       //图片加载完
       const refresh = deBounce(this.$refs.scroll.refreshHeight,200)//进行防抖包装
-      this.$bus.$on('imageLoaded',() => {
+      this.$bus.$on('homeImageLoaded',() => {
         refresh()
       })
 
+    },
+    activated() {
+      this.$refs.scroll.refreshHeight()
+      this.$refs.scroll.myScrollTo(0, this.saveY, 0)
+    },
+    deactivated() {
+      this.saveY = this.$refs.scroll.getY()
     },
     methods: {
       /**
@@ -120,7 +128,7 @@
 
       backClick() {
         // (x,y,time)
-        this.$refs.scroll.backToTop(0,0)
+        this.$refs.scroll.myScrollTo(0,0)
       },
 
       contentScroll(position) {

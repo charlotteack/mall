@@ -23,7 +23,13 @@
     },
     methods: {
       imageLoad() {
-        this.$bus.$emit('imageLoaded')
+        //首页和详情页分开发，不干扰
+        if (this.$route.path.indexOf('/home') !== -1) {
+          this.$bus.$emit('homeImageLoaded')
+        }else if (this.$route.path.indexOf('/detail') !== -1) {
+          this.$bus.$emit('detailImageLoaded')
+        }
+
       },
       itemClick() {
         this.$router.push('/detail/' + this.goodsItem.iid)

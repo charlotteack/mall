@@ -48,7 +48,7 @@
       }
     },
     methods: {
-      backToTop(x, y, time=500) {
+      myScrollTo(x, y, time=500) {
         this.scroll && this.scroll.scrollTo(x,y,time)
       },
 
@@ -59,6 +59,10 @@
       refreshHeight() {
         //注意可能没有挂载的时候，图片请求太快会调用，这个时候回报错
         this.scroll && this.scroll.refresh()
+      },
+
+      getY() {
+        return this.scroll.y
       }
     }
   }
