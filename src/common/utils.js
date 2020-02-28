@@ -1,5 +1,5 @@
 //事件防抖函数;节流throttle
-export function deBounce(func,delay = 100) {
+export function deBounce(func,delay) {
   let timer = null
   return function (...args) {
     if(timer) clearTimeout(timer)

@@ -1,8 +1,8 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav" @navClick="navClick"></detail-nav-bar>
+    <detail-nav-bar class="detail-nav" @navClick="navClick" ref="nav"></detail-nav-bar>
 
-    <scroll class="detail-content" ref="scroll">
+    <scroll class="detail-content" ref="scroll" @scroll="scroll" :probe-type="3">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goodsDetail"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
@@ -12,23 +12,28 @@
       <goods-list :goods="recommends" ref="recommend"></goods-list>
     </scroll>
 
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
+
+    <detail-bottom-bar></detail-bottom-bar>
   </div>
 </template>
 
 <script>
   import DetailNavBar from './childcomponents/DetailNavBar'
-  import DetailSwiper from './childcomponents/DetailSwaper'
+  import DetailSwiper from './childcomponents/DetailSwiper'
   import DetailBaseInfo from './childcomponents/DetailBaseInfo'
   import DetailShopInfo from './childcomponents/DetailShopInfo'
   import DetailGoodsInfo from './childcomponents/DetailGoodsInfo'
   import DetailParamsInfo from './childcomponents/DetailParamsInfo'
   import DetailCommentInfo from './childcomponents/DetailCommentInfo'
+  import DetailBottomBar from './childcomponents/DetailBottomBar'
   import GoodsList from 'components/content/goods/GoodsList'
 
   import Scroll from 'components/common/scroll/Scroll'
 
   import {getDetail,GoodsDetail,Shop,GoodsParam,getRecommend} from "network/detail";
   import {deBounce} from "../../common/utils";
+  import {goodItemListenerMixin, backTopMixin} from "common/mixins";
 
   export default {
     name: "Detail",
@@ -40,6 +45,7 @@
       DetailGoodsInfo,
       DetailParamsInfo,
       DetailCommentInfo,
+      DetailBottomBar,
       GoodsList,
       Scroll
     },
@@ -53,10 +59,13 @@
         paramsInfo: {},
         commentInfo: {},
         recommends: [],
-        topicY: [0],
-        getTopicY: null
+        topicY: [0, 0, 0, 0],
+        getTopicY: null,
+        currentIndex: 0
+
       }
     },
+    mixins: [goodItemListenerMixin, backTopMixin],
     created() {
       this.iid = this.$route.params.iid
       //商品详细数据
@@ -86,7 +95,6 @@
         //   this.topicY.push(this.$refs.comment.$el.offsetTop)
         //   this.topicY.push(this.$refs.recommend.$el.offsetTop)
         // })
-
       })
 
       //推荐数据
@@ -97,26 +105,46 @@
       this.getTopicY = deBounce(() => {
         this.topicY = []
         this.topicY.push(0)
-        this.topicY.push(this.$refs.param.$el.offsetTop)
+        this.topicY.push(this.$refs.param.$el.offsetTop - 10)
         this.topicY.push(this.$refs.comment.$el.offsetTop)
         this.topicY.push(this.$refs.recommend.$el.offsetTop)
+        this.topicY.push(Number.MAX_VALUE)
       },100)
-
     },
     mounted() {
-      let newRefresh = deBounce(this.$refs.scroll.refresh,100)
-      this.$bus.$on('detailImageLoaded', () => {
-        newRefresh()
-        this.getTopicY()
-      })
+      //推荐图片的good-item刷新
+      // let newRefresh = deBounce(this.$refs.scroll.refreshHeight,50)
+      // this.$bus.$on('detailImageLoaded', () => {
+      //   console.log('recommend')
+      //   newRefresh()
+      //   this.getTopicY()
+      // })
     },
-
+    destroyed() {
+      this.$bus.$off('itemImageLoad',this.itemImageListener)
+    },
     methods: {
+      //轮播图和商品图片的刷新
       imageLoad() {
-        this.$refs.scroll.refreshHeight()
+        // console.log('info-swiper')
+        this.deBounceRefresh()
+        this.getTopicY()
       },
       navClick(index) {
         this.$refs.scroll.myScrollTo(0, -this.topicY[index], 500)
+      },
+      scroll(position) {
+        this.listenBackTop(position)
+        const positionY = -position.y
+        const length = this.topicY.length
+        for (let i = 0; i < length - 1; i++) {
+          //currentIndex可以方便判断,只修改一次.让数组后面多加一个很大的数可以使条件简单一点
+          if (this.currentIndex !== i
+            && (i < length-1 && positionY >= this.topicY[i] && positionY < this.topicY[i + 1])){
+            this.currentIndex = i
+            this.$refs.nav.currentIndex = i
+          }
+        }
       }
     }
   }
@@ -130,7 +158,7 @@
    height: 100vh;
  }
   .detail-content {
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 49px);
   }
   .detail-nav {
     position: relative;

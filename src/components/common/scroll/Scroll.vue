@@ -57,7 +57,7 @@
       },
 
       refreshHeight() {
-        //注意可能没有挂载的时候，图片请求太快会调用，这个时候回报错
+        //注意可能没有挂载的时候，图片请求太快会调用，这个时候会报错
         this.scroll && this.scroll.refresh()
       },
 

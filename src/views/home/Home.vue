@@ -11,7 +11,7 @@
       <tab-control :titles="['流行','新款','精选']"  @tabclick="tabclick" ref="tabControl"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
-    <!--注意组件不能直接监听点击事件，要加上native才能监听组件的原生事件-->
+    <!--注意组件不能直接监听点击事件，要加上native才能监听组件的原生事件。最后还是混入-->
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
@@ -21,7 +21,6 @@
   import TabControl from 'components/content/tabcontrol/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
   import Scroll from 'components/common/scroll/Scroll'
-  import BackTop from 'components/content/backTop/BackTop'
 
   import HomeSwiper from  './childComponents/HomeSwiper'
   import HomeRecommendView from './childComponents/HomeRecommendView'
@@ -29,7 +28,7 @@
 
   import {getHomeMultidata,getHomeGoods} from "network/home";
 
-  import {deBounce} from "common/utils";
+  import {goodItemListenerMixin, backTopMixin} from "common/mixins";
 
   export default {
     name: "Home",
@@ -38,7 +37,6 @@
       TabControl,
       GoodsList,
       Scroll,
-      BackTop,
       HomeSwiper,
       HomeRecommendView,
       HomeFeatureView,
@@ -54,7 +52,6 @@
           'sell': {page: 0,list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false,
         tabOffsetTop: 0,
         isTabFixed: false,
         saveY: 0
@@ -65,6 +62,7 @@
         return this.goods[this.currentType].list
       }
     },
+    mixins: [goodItemListenerMixin, backTopMixin],
     created() {
       this.getHomeMultidata()
       this.getHomeGoods('pop')
@@ -72,12 +70,12 @@
       this.getHomeGoods('sell')
     },
     mounted() {
+      //混入之后不需要了
       //图片加载完
-      const refresh = deBounce(this.$refs.scroll.refreshHeight,200)//进行防抖包装
-      this.$bus.$on('homeImageLoaded',() => {
-        refresh()
-      })
-
+      // const refresh = deBounce(this.$refs.scroll.refreshHeight,200)//进行防抖包装
+      // this.$bus.$on('homeImageLoaded',() => {
+      //   refresh()
+      // })
     },
     activated() {
       this.$refs.scroll.refreshHeight()
@@ -85,6 +83,7 @@
     },
     deactivated() {
       this.saveY = this.$refs.scroll.getY()
+      this.$bus.$off('itemImageLoad',this.itemImageListener)
     },
     methods: {
       /**
@@ -126,13 +125,8 @@
         this.$refs.tabControl2.currentIndex = index
       },
 
-      backClick() {
-        // (x,y,time)
-        this.$refs.scroll.myScrollTo(0,0)
-      },
-
       contentScroll(position) {
-        this.isShowBackTop = -position.y > 1000
+        this.listenBackTop(position)
         this.isTabFixed = -position.y >= this.tabOffsetTop
       },
 

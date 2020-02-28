@@ -9,7 +9,7 @@
 <script>
   import {Swiper,SwiperItem} from 'components/common/swiper'
   export default {
-    name: "DetailSwapper",
+    name: "DetailSwiper",
     components: {
       Swiper,
       SwiperItem

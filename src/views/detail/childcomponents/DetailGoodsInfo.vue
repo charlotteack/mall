@@ -31,17 +31,17 @@
     },
     methods :{
       imgLoad(){
-        //需要所有图片都加载完
-        if (++this.count === this.imageLength) {
+        // 需要所有图片都加载完
+        // if (++this.count === this.imageLength) {
           this.$emit('imageLoad')
-        }
+        // }
       }
     },
-    watch :{
-      detailInfo() {
-        this.imageLength = this.detailInfo.detailImage[0].list.length
-      }
-    }
+    // watch :{
+    //   detailInfo() {
+    //     this.imageLength = this.detailInfo.detailImage[0].list.length
+    //   }
+    // }
   }
 </script>
 

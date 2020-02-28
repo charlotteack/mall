@@ -24,11 +24,14 @@
     methods: {
       imageLoad() {
         //首页和详情页分开发，不干扰
-        if (this.$route.path.indexOf('/home') !== -1) {
-          this.$bus.$emit('homeImageLoaded')
-        }else if (this.$route.path.indexOf('/detail') !== -1) {
-          this.$bus.$emit('detailImageLoaded')
-        }
+        // if (this.$route.path.indexOf('home') !== -1) {
+        //   this.$bus.$emit('homeImageLoaded')
+        // }else if (this.$route.path.indexOf('detail') !== -1) {
+        //   this.$bus.$emit('detailImageLoaded')
+        // }
+
+        //使用混入不需要进行路由区分
+        this.$bus.$emit('itemImageLoad')
 
       },
       itemClick() {
