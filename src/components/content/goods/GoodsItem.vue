@@ -1,7 +1,7 @@
 <template>
   <div class="goods-item" @click="itemClick">
     <!--需要使用vue自带的load监听图片的加载，让scroll的scrollerHeight属性刷新-->
-    <img :src="showImage" alt="抱歉，图片暂时无法查看" @load="imageLoad">
+    <img v-lazy="showImage" alt="抱歉，图片暂时无法查看" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
