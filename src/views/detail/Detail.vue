@@ -14,7 +14,7 @@
 
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
 
-    <detail-bottom-bar></detail-bottom-bar>
+    <detail-bottom-bar @addCart="addToCart"/>
   </div>
 </template>
 
@@ -34,6 +34,8 @@
   import {getDetail,GoodsDetail,Shop,GoodsParam,getRecommend} from "network/detail";
   import {deBounce} from "../../common/utils";
   import {goodItemListenerMixin, backTopMixin} from "common/mixins";
+
+  import { mapActions } from 'vuex'
 
   export default {
     name: "Detail",
@@ -124,15 +126,18 @@
       this.$bus.$off('itemImageLoad',this.itemImageListener)
     },
     methods: {
-      //轮播图和商品图片的刷新
+      ...mapActions(['addCart']),
+      //商品图片的刷新
       imageLoad() {
         // console.log('info-swiper')
         this.deBounceRefresh()
         this.getTopicY()
       },
+      //导航栏点击
       navClick(index) {
         this.$refs.scroll.myScrollTo(0, -this.topicY[index], 500)
       },
+      //监听滚动
       scroll(position) {
         this.listenBackTop(position)
         const positionY = -position.y
@@ -145,6 +150,23 @@
             this.$refs.nav.currentIndex = i
           }
         }
+      },
+
+      addToCart() {
+        const  product = {}
+        product.image = this.topImages[0]
+        product.title = this.goodsDetail.title
+        product.desc = this.goodsDetail.desc
+        product.price = this.goodsDetail.realPrice
+        product.iid = this.iid
+        // this.$store.dispatch('addCart', product).then( res => {
+        //   this.$toast.show(res, 2000)
+        // })
+
+        // 利用vuex的映射
+        this.addCart(product).then(res => {
+          this.$toast.show(res, 2000)
+        })
       }
     }
   }
