@@ -5,10 +5,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const Home = () => import('views/home/Home')
+const Detail = () => import('views/detail/Detail')
 const Category = () => import('views/category/Category')
 const Cart = () => import('views/cart/Cart')
 const Profile = () => import('views/profile/Profile')
-const Detail = () => import('views/detail/Detail')
+const UpdateProfile = () => import('views/updateprofile/UpdateProfile')
 
 const routes = [
   {
@@ -18,6 +19,10 @@ const routes = [
   {
     path: '/home',
     component: Home
+  },
+  {
+    path: '/detail/:iid',
+    component: Detail
   },
   {
     path: '/category',
@@ -32,8 +37,8 @@ const routes = [
     component: Profile
   },
   {
-    path: '/detail/:iid',
-    component: Detail
+    path: '/updateprofile',
+    component: UpdateProfile
   }
 ]
 

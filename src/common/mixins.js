@@ -9,14 +9,14 @@ export const goodItemListenerMixin = {
       itemImageListener: null,
     }
   },
-  mounted(){
-    //将之前Home.vue和Detail.vue中在mounted代码中公共的代码抽离到这个混入对象的mounted方法中：
-    this.deBounceRefresh = deBounce(this.$refs.scroll.refreshHeight, 100);
-    this.itemImageListener = ()=>{
-      this.deBounceRefresh()
-    }
-    this.$bus.$on('itemImageLoad', this.itemImageListener)
+mounted(){
+  //将之前Home.vue和Detail.vue中在mounted代码中公共的代码抽离到这个混入对象的mounted方法中：
+  this.deBounceRefresh = deBounce(this.$refs.scroll.refreshHeight, 100);
+  this.itemImageListener = ()=>{
+    this.deBounceRefresh()
   }
+  this.$bus.$on('itemImageLoad', this.itemImageListener)
+}
 }
 
 

@@ -90,13 +90,13 @@
         }
 
         //全部渲染完之后确定每个主题的滚动位置,但是这样会因为图片加载缓慢而有错误
-        // this.nextTick(() => {
-        //   this.topicY = []
-        //   this.topicY.push(0)
-        //   this.topicY.push(this.$refs.param.$el.offsetTop)
-        //   this.topicY.push(this.$refs.comment.$el.offsetTop)
-        //   this.topicY.push(this.$refs.recommend.$el.offsetTop)
-        // })
+        this.nextTick(() => {
+          this.topicY = []
+          this.topicY.push(0)
+          this.topicY.push(this.$refs.param.$el.offsetTop)
+          this.topicY.push(this.$refs.comment.$el.offsetTop)
+          this.topicY.push(this.$refs.recommend.$el.offsetTop)
+        })
       })
 
       //推荐数据

@@ -22,9 +22,9 @@
   import GoodsList from 'components/content/goods/GoodsList'
   import Scroll from 'components/common/scroll/Scroll'
 
-  import HomeSwiper from  './childComponents/HomeSwiper'
-  import HomeRecommendView from './childComponents/HomeRecommendView'
-  import HomeFeatureView from './childComponents/HomeFeatureView'
+  import HomeSwiper from './childcomponents/HomeSwiper'
+  import HomeRecommendView from './childcomponents/HomeRecommendView'
+  import HomeFeatureView from './childcomponents/HomeFeatureView'
 
   import {getHomeMultidata,getHomeGoods} from "network/home";
 

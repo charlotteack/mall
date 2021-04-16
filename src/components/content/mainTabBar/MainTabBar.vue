@@ -6,7 +6,7 @@
         <img src="~assets/img/tabbar/home_active.svg" alt="" slot="item-icon-active">
         <div slot="item-text">首页</div>
       </TabBarItem>
-      <TabBarItem path="/list">
+      <TabBarItem path="/category">
         <img src="~assets/img/tabbar/list.svg" alt="" slot="item-icon">
         <img src="~assets/img/tabbar/list_active.svg" alt="" slot="item-icon-active">
         <div slot="item-text">分类</div>
