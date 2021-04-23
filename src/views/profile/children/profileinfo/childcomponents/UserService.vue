@@ -14,13 +14,8 @@
 </template>
 
 <script>
-  import { Cell, CellGroup } from 'vant';
   export default {
     name: "UserService",
-    components: {
-      [Cell.name]: Cell,
-      [CellGroup.name]: CellGroup
-    }
   }
 </script>
 

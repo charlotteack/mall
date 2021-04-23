@@ -15,12 +15,9 @@
 </template>
 
 <script>
-  import { Search as VanSearch} from 'vant';
+
   export default {
     name: "SearchNavBar",
-    components: {
-      VanSearch,
-    },
     data() {
       return {
         value: '',

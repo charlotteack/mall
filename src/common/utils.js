@@ -45,3 +45,33 @@ export function formatDate(date, fmt) {
 function padLeftZero (str) {
   return ('00' + str).substr(str.length);
 }
+
+
+//金钱单位转换：分转元
+const toDecimal2 = (x) => {
+  var f = parseFloat(x);
+  if (isNaN(f)) {
+    return false;
+  }
+  var f = Math.round(x * 100) / 100;
+  var s = f.toString();
+  var rs = s.indexOf('.');
+  if (rs < 0) {
+    rs = s.length;
+    s += '.';
+  }
+  while (s.length <= rs + 2) {
+    s += '0';
+  }
+  return s;
+}
+
+export const regFenToYuan = (fen) =>{
+  let num = fen;
+  num = fen*0.01;
+  num += '';
+  let reg = num.indexOf('.') >-1 ? /(\d{1,3})(?=(?:\d{3})+\.)/g : /(\d{1,3})(?=(?:\d{3})+$)/g;
+  num = num.replace(reg,'$1');
+  num = toDecimal2(num)
+  return num
+};

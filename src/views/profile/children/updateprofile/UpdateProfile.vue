@@ -74,13 +74,6 @@
 </template>
 
 <script>
-import { Icon as VanIcon} from 'vant';
-import { Cell as VanCell ,CellGroup as VanCellGroup} from 'vant';
-import { RadioGroup as VanRadioGroup, Radio as VanRadio} from 'vant';
-import { Field as VanField} from 'vant';
-import { Form as VanForm} from 'vant';
-import { Button as VanButton } from 'vant'
-import { Uploader as VanUploader} from 'vant';
 import UpdateProfileNavBar from './childcomponents/UpdateProfileNavBar'
 export default {
   data() {
@@ -95,13 +88,6 @@ export default {
     }
   },
   components: {
-    VanIcon,
-    VanField,
-    VanForm,
-    VanButton,
-    VanRadioGroup,
-    VanRadio,
-    VanUploader,
     UpdateProfileNavBar
   },
   methods: {

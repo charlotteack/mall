@@ -7,6 +7,8 @@ import toast from 'components/common/toast'
 import FastClick from 'fastclick'
 import VueLazyLoad from 'vue-lazyload'
 
+import 'common/myVant'
+
 Vue.config.productionTip = false
 
 Vue.prototype.$bus = new Vue()

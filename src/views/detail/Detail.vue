@@ -2,7 +2,7 @@
   <div id="detail">
     <detail-nav-bar class="detail-nav" @navClick="navClick" ref="nav"></detail-nav-bar>
 
-    <scroll class="detail-content" ref="scroll" @scroll="scroll" :probe-type="3">
+    <scroll class="detail-content" ref="myScroll" @scroll="scroll" :probe-type="3">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goodsDetail"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
@@ -12,9 +12,30 @@
       <goods-list :goods="recommends" ref="recommend"></goods-list>
     </scroll>
 
+    <van-sku
+      ref="sku"
+      v-model="isShowSku"
+      :sku="sku"
+      :goods="skuGoods"
+      :goodsId="iid"
+      :initial-sku="initialSku"
+      @buy-clicked="okBtnClick"
+    >
+      <template #sku-actions="props">
+      <div class="van-sku-actions">
+        <button @click="props.skuEventBus.$emit('sku:buy')" class="okBtn">
+          确定
+        </button>
+      </div>
+    </template>
+
+
+    </van-sku>
+
+
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
 
-    <detail-bottom-bar @addCart="addToCart"/>
+    <detail-bottom-bar @addCart="addToCart" @quicklyBuy="quicklyBuy"/>
   </div>
 </template>
 
@@ -30,6 +51,8 @@
   import GoodsList from 'components/content/goods/GoodsList'
 
   import Scroll from 'components/common/scroll/Scroll'
+
+  import { Sku as VanSku } from 'vant';
 
   import {getDetail,GoodsDetail,Shop,GoodsParam,getRecommend} from "network/detail";
   import {deBounce} from "../../common/utils";
@@ -49,7 +72,8 @@
       DetailCommentInfo,
       DetailBottomBar,
       GoodsList,
-      Scroll
+      Scroll,
+      VanSku,
     },
     data() {
       return {
@@ -63,8 +87,17 @@
         recommends: [],
         topicY: [0, 0, 0, 0],
         getTopicY: null,
-        currentIndex: 0
-
+        currentIndex: 0,
+        btnType: '',
+        isShowSku: false,
+        sku: {
+          tree:[],
+          list:[]
+        },
+        skuGoods: {
+          picture: ''
+        },
+        initialSku:{}
       }
     },
     mixins: [goodItemListenerMixin, backTopMixin],
@@ -90,13 +123,71 @@
         }
 
         //全部渲染完之后确定每个主题的滚动位置,但是这样会因为图片加载缓慢而有错误
-        this.nextTick(() => {
+        this.$nextTick(() => {
           this.topicY = []
           this.topicY.push(0)
           this.topicY.push(this.$refs.param.$el.offsetTop)
           this.topicY.push(this.$refs.comment.$el.offsetTop)
           this.topicY.push(this.$refs.recommend.$el.offsetTop)
         })
+
+        //初始化sku,json文件的数据格式和sku规定的有很大区别，操作起来比较费劲
+        //先拿到整体的sku全部数据
+        let mySkuData = data.skuInfo
+        //拿图片
+        let skuImgs = []
+        mySkuData.skus.forEach(item => {
+          if(skuImgs.indexOf(item.img) === -1) {
+            skuImgs.push(item.img)
+          }
+        })
+        //给sku的tree赋值，数据里面其实就两个规格，一个是颜色，一个是尺寸。props[0]是颜色对应tree[0]，props[1]尺寸对应tree[1]
+        //至于id，后面传数据传的是id，但好像没有根据id拿name的方法，索性就把id的值也当成name
+        let skuColorValues = []
+        mySkuData.props[0].list.forEach((propsListItem,index) => {
+          skuColorValues.push({
+            id: propsListItem.name,
+            name: propsListItem.name,
+            imgUrl: skuImgs[index],
+          })
+        })
+        this.sku.tree[0] = {
+          k: mySkuData.props[0].label,
+          k_s: 'styleId',
+          v: skuColorValues
+        }
+        let skuSizeValues = []
+        mySkuData.props[1].list.forEach((propsListItem) => {
+          skuSizeValues.push({
+            id: propsListItem.name,
+            name: propsListItem.name,
+          })
+        })
+        this.sku.tree[1] = {
+          k: mySkuData.props[1].label,
+          k_s: 'sizeId',
+          v: skuSizeValues
+        }
+        //给sku的list添加数据，也就是全部的规格组合，唯一不确定的是id问题，我就用的0,1,2...;
+        //其次官方文档里面没有说可以加图片路径，我发现可以自由补充，还比较方便
+        mySkuData.skus.forEach((item, index) => {
+          this.sku.list.push({
+            id: index,
+            imgUrl: item.img,
+            styleId: item.style,
+            sizeId: item.size,
+            price: item.nowprice,
+            stock_num: item.stock
+          })
+        })
+        //开始不选的话，会出现总库存以及这个图片，或者利用参数initialSku来直接初始化也许，
+        this.sku.stock_num = mySkuData.totalStock
+        this.skuGoods.picture = skuImgs[0]
+        this.initialSku = {
+          selectedNum: 1,
+          styleId: this.sku.list[0].styleId,
+          sizeId: this.sku.list[0].sizeId
+        }
       })
 
       //推荐数据
@@ -135,7 +226,7 @@
       },
       //导航栏点击
       navClick(index) {
-        this.$refs.scroll.myScrollTo(0, -this.topicY[index], 500)
+        this.$refs.myScroll.myScrollTo(0, -this.topicY[index], 500)
       },
       //监听滚动
       scroll(position) {
@@ -153,6 +244,8 @@
       },
 
       addToCart() {
+        this.isShowSku = !this.isShowSku
+        this.btnType = 'AddToCart'
         const  product = {}
         product.image = this.topImages[0]
         product.title = this.goodsDetail.title
@@ -167,6 +260,34 @@
         this.addCart(product).then(res => {
           this.$toast.show(res, 2000)
         })
+      },
+
+      okBtnClick(skuData) {
+        // console.log(skuData)
+        //在这里验证登录情况后再判断
+        if(this.btnType === 'quicklyBuy') {
+          //整理数据，因为进入订单有两种，一个是这里直接购买，还有一种是到购物里面结算
+          //为方便起见，要保证传入订单的数据格式一样
+          let orderGoodsList = []
+          orderGoodsList.push({
+            iid: this.iid,
+            title: this.goodsDetail.title,
+            desc: `颜色款式：${skuData.selectedSkuComb.styleId}  尺码：${skuData.selectedSkuComb.sizeId}`,
+            price: skuData.selectedSkuComb.price,
+            imgUrl: skuData.selectedSkuComb.imgUrl,
+            selectedNum: skuData.selectedNum
+          })
+          this.$router.push({
+            path: '/order',
+            query: {orderGoodsList}
+          })
+        }else {
+          //加入购物车，也利用要vuex，暂时还是放在方面，先不管
+        }
+      },
+      quicklyBuy() {
+        this.isShowSku = !this.isShowSku
+        this.btnType = 'quicklyBuy'
       }
     }
   }
@@ -186,5 +307,13 @@
     position: relative;
     z-index: 9;
     background-color: #fff;
+  }
+  .okBtn {
+    width: 100%;
+    height: 49px;
+    color: white;
+    background-color: #f69;
+    border: 0;
+    padding: 0;
   }
 </style>

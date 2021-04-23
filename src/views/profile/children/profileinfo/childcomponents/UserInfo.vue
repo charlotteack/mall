@@ -21,13 +21,8 @@
 </template>
 
 <script>
-  import { Image as VanImage ,Button as VanButton} from 'vant';
   export default {
     name: "UserInfo",
-    components: {
-      VanImage,
-      VanButton
-    },
     data() {
       return {
         
@@ -53,7 +48,7 @@
     },
     methods: {
       updateProfile() {
-        this.$router.push('/updateprofile')
+        this.$router.push('/profile/update')
       }
     }
    

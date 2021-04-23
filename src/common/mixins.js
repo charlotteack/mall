@@ -11,7 +11,7 @@ export const goodItemListenerMixin = {
   },
 mounted(){
   //将之前Home.vue和Detail.vue中在mounted代码中公共的代码抽离到这个混入对象的mounted方法中：
-  this.deBounceRefresh = deBounce(this.$refs.scroll.refreshHeight, 100);
+  this.deBounceRefresh = deBounce(this.$refs.myScroll.refreshHeight, 100);
   this.itemImageListener = ()=>{
     this.deBounceRefresh()
   }
@@ -35,7 +35,7 @@ export const backTopMixin = {
       this.isShowBackTop = -(position.y) > BACKTOP_DISTANCE
     },
     backClick() {
-      this.$refs.scroll.myScrollTo(0, 0)
+      this.$refs.myScroll.myScrollTo(0, 0)
     }
   }
 }

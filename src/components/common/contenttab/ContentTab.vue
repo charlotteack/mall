@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-tabs @click="onClick">
+    <van-tabs @click="onClick" v-model="currentIndex">
       <div v-for="title in tabTitles">
         <van-tab :title="title">
           <slot></slot>
@@ -11,12 +11,12 @@
 </template>
 
 <script>
-  import { Tab as VanTab, Tabs as VanTabs} from 'vant'
   export default {
     name: "ContentTab",
-    components: {
-      VanTab,
-      VanTabs
+    data() {
+      return {
+        currentIndex: 0
+      }
     },
     props: {
       tabTitles: {
@@ -25,7 +25,7 @@
         default() {
           return []
         }
-      }
+      },
     },
     methods: {
       onClick(name, title) {

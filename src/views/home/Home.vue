@@ -1,10 +1,10 @@
 <template>
   <div id="home">
-    <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <nav-bar class="home-nav"><div slot="center">服装购</div></nav-bar>
 
     <tab-control :titles="['流行','新款','精选']" class="tab-control1" @tabclick="tabclick" ref="tabControl2" v-show="isTabFixed"></tab-control>
 
-    <scroll class="scrollContent" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
+    <scroll class="scrollContent" ref="myScroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banner="banner" @swiperImageLoad="swiperImageLoad"/>
       <home-recommend-view :recommend="recommend"/>
       <home-feature-view/>
@@ -78,11 +78,11 @@
       // })
     },
     activated() {
-      this.$refs.scroll.refreshHeight()
-      this.$refs.scroll.myScrollTo(0, this.saveY, 0)
+      this.$refs.myScroll.refreshHeight()
+      this.$refs.myScroll.myScrollTo(0, this.saveY, 0)
     },
     deactivated() {
-      this.saveY = this.$refs.scroll.getY()
+      this.saveY = this.$refs.myScroll.getY()
       this.$bus.$off('itemImageLoad',this.itemImageListener)
     },
     methods: {
@@ -103,7 +103,7 @@
           this.goods[type].page += 1
           this.goods[type].list.push(...res.data.list)
 
-          this.$refs.scroll.finishPull()
+          this.$refs.myScroll.finishPull()
         })
       },
 
