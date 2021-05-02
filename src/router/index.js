@@ -18,6 +18,8 @@ const MyAddress = () => import('views/order/children/MyAddress');
 const AddAddress = () => import('views/order/children/AddAddress');
 const EditAddress = () => import('views/order/children/EditAddress');
 
+const Login = () => import('views/login/Login')
+
 // 解决多次点击重复路由报错
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
@@ -43,7 +45,10 @@ const routes = [
   },
   {
     path: '/cart',
-    component: Cart
+    component: Cart,
+    meta: {
+      requireAuth: true
+    }
   },
   {
     path: '/profile',
@@ -56,7 +61,10 @@ const routes = [
       },
       {
         path: 'update',
-        component: UpdateProfile
+        component: UpdateProfile,
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },
@@ -65,11 +73,17 @@ const routes = [
     path: '/order',
     name: 'order',
     component: Order,
+    meta: {
+      requireAuth: true
+    },
     children: [{
       // 我的地址
       path: 'myAddress',
       name: 'myAddress',
       component: MyAddress,
+      meta: {
+        requireAuth: true
+      },
       children: [{
         // 添加地址
         path: 'addAddress',
@@ -83,7 +97,12 @@ const routes = [
       }]
     }
     ]
-  }
+  },
+  {
+    path: '/login',
+    component: Login
+  },
+
 ]
 
 const router = new VueRouter({
@@ -91,5 +110,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
 
 export default router

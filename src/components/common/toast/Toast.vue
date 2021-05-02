@@ -30,7 +30,7 @@
 <style scoped>
   .toast{
     position: fixed;
-    z-index: 99;
+    z-index: 9999;
     top: 50%;
     left: 50%;
     transform: translate(-50%);

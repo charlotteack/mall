@@ -4,15 +4,22 @@
     <update-profile-nav-bar></update-profile-nav-bar>
     <van-form @submit="onSubmit">
 
-      <van-field name="uploader" label="头像">
+      <van-field name="userImage" label="头像">
         <template #input>
-          <van-uploader v-model="avatar"  multiple :max-count="1"/>
+          <van-uploader v-model="avatar"  multiple :max-count="1" :after-read="afterRead"/>
         </template>
       </van-field>
 
       <van-field
-        v-model="username"
-        name="用户名"
+        v-model="uid"
+        name="uid"
+        label="用户ID"
+        readonly
+      />
+
+      <van-field
+        v-model="userName"
+        name="userName"
         label="用户名"
         placeholder="用户名"
         :rules="[{ required: true, message: '请填写用户名' }]"
@@ -37,29 +44,27 @@
       <!--/>-->
       <div style="height: 15px;background-color: #f6f6f6"></div>
 
-       <van-field
-        v-model="idcard"
-        name="身份证号"
-        label="身份证号"
-        placeholder="身份证号"
-        :rules="[{ required: true, message: '请填写身份证号' }]"
-      />
+       <!--<van-field-->
+        <!--v-model="idcard"-->
+        <!--name="idcard"-->
+        <!--label="身份证号"-->
+        <!--placeholder="身份证号"-->
+      <!--/>-->
 
       <van-field
         v-model="tel"
         type="tel"
-        name="手机号"
+        name="tel"
         label="手机号"
         placeholder="手机号"
-        :rules="[{ required: true, message: '请填写手机号' }]"
+        readonly
       />
 
       <van-field
-        v-model="tel"
-        name="邮箱"
+        v-model="email"
+        name="email"
         label="邮箱"
         placeholder="邮箱"
-        :rules="[{ required: true, message: '请填写邮箱' }]"
       />
 
 
@@ -75,24 +80,65 @@
 
 <script>
 import UpdateProfileNavBar from './childcomponents/UpdateProfileNavBar'
+import {updateUserInfo} from 'network/profile'
+import { mapState , mapActions} from 'vuex'
 export default {
   data() {
     return {
-      username: '',
-      password: '',
-      idcard: '',
+      uid:'',
+      userName: '',
       tel: '',
-      sex: '男',
-      avatar: [{url: '',isImage: true}]
-
+      sex: '',
+      avatar: [{url: '',isImage: true}],
+      email: ''
     }
+  },
+  created() {
+    this.uid = this.userInfo.uid
+    this.userName = this.userInfo.userName
+    this.tel = this.userInfo.phoneNumber
+    this.sex =  this.userInfo.sex
+    this.avatar[0].url = this.userInfo.userImage
+  },
+  computed: {
+    ...mapState(['userInfo']),
   },
   components: {
     UpdateProfileNavBar
   },
   methods: {
+    ...mapActions(['saveUserInfo']),
+    afterRead(file) {
+      // console.log(file)
+      // updateUserInfo(file.file)
+    },
     onSubmit(values) {
+      // let updateInfo = {
+      //   userImage: values.userImage[0].content,
+      //   ...values
+      // }
+      // console.log(values.userImage[0].file);
+      // let img = values.userImage[0].file
+      // let user = new FormData();
+      // user.append('userImage', img)
+      // user.append('uid', values.uid)
+      // user.append('userName', values.userName)
+      // user.append('sex', values.sex)
+      // user.append('tel', values.tel)
+      // user.append('email', values.email)
 
+      //暂时不修改头像
+      values.userImage = undefined
+      updateUserInfo(values).then(res => {
+        if(res.state===0) {
+          //更新vuex和本地信息，实际上只能更新三个信息
+          this.userInfo.userName = this.userName
+          this.userInfo.sex = this.sex
+          this.userInfo.email = this.email
+          this.saveUserInfo(this.userInfo)
+          this.$toast.show('修改成功',1000)
+        }
+      })
     }
   }
 }

@@ -5,14 +5,18 @@
       <CheckButton :is-checked="itemInfo.checked" @click.native="checkClick"></CheckButton>
     </div>
     <div class="item-img">
-      <img :src="itemInfo.image" alt="商品图片">
+      <img :src="itemInfo.imgUrl" alt="商品图片">
     </div>
     <div class="item-info">
       <div class="item-title">{{itemInfo.title}}</div>
       <div class="item-desc">商品描述: {{itemInfo.desc}}</div>
       <div class="info-bottom">
         <div class="item-price left">¥{{itemInfo.price}}</div>
-        <div class="item-count right">x{{itemInfo.count}}</div>
+        <div class="item-count right">
+          <button @click="decrement">-</button>
+          x{{count}}
+          <button @click="increment">+</button>
+        </div>
       </div>
     </div>
   </div>
@@ -20,6 +24,8 @@
 
 <script>
   import CheckButton from 'components/content/checkbutton/CheckButton'
+  import { mapActions } from 'vuex'
+  import { Dialog } from 'vant'
   export default {
     name: "CartListItem",
     props: {
@@ -30,12 +36,50 @@
         }
       }
     },
+    computed: {
+      count: {
+        get: function() {
+          return this.itemInfo.count
+        },
+        set: function() {
+          //要修改的话必须要set，内容可以为空
+        }
+
+      }
+    },
     components: {
       CheckButton
     },
     methods: {
+      ...mapActions(['addCart']),
+      ...mapActions(['subtractCart']),
+      ...mapActions(['deleteCart']),
       checkClick() {
         this.itemInfo.checked = !this.itemInfo.checked
+      },
+      decrement() {
+        if(this.count>1){
+          this.count--
+          this.subtractCart(this.itemInfo.iid).then(res => {
+            this.$toast.show(res, 1000)
+          })
+        }else {
+          Dialog.alert({
+            title: '注意',
+            message: '确定要删除商品吗',
+          }).then(() => {
+            this.deleteCart(this.itemInfo.iid).then(res => {
+              this.$toast.show(res, 1000)
+            })
+          });
+        }
+
+      },
+      increment() {
+        this.count++
+        this.addCart({iid: this.itemInfo.iid,count: 1}).then(res => {
+          this.$toast.show(res, 1000)
+        })
       }
     }
   }
@@ -99,5 +143,12 @@
 
   .info-bottom .item-price {
     color: orangered;
+  }
+
+  button {
+    height: 15px;
+    width: 15px;
+    background-color: #f6f6f6;
+    border: none;
   }
 </style>

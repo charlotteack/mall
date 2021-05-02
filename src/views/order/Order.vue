@@ -4,8 +4,8 @@
     <OrderNavBar class="order-nav" title="填写订单"></OrderNavBar>
 
     <van-contact-card :type="address_type"
-                      :name="address_name"
-                      :tel="address_phone"
+                      :name="this.chosenAddress.name"
+                      :tel="this.chosenAddress.tel"
                       :add-text="address_text"
                       @click="chooseAddress"/>
 
@@ -21,14 +21,16 @@
 
     <OrderPayMethod></OrderPayMethod>
 
-    <OrderCoupon style="margin-top: 10px"></OrderCoupon>
+    <OrderCoupon style="margin-top: 10px" :total-money="totalPrice"></OrderCoupon>
 
-    <van-submit-bar :price="3050" button-text="提交订单" @submit="onSubmit" button-color="#f69"/>
+    <van-submit-bar :price="totalPrice*100" button-text="提交订单" @submit="onSubmit" button-color="#f69"/>
 
     <!-- 路由出口 -->
     <transition name="router-slider"
                 mode="out-in">
-      <router-view></router-view>
+      <keep-alive>
+        <router-view/>
+      </keep-alive>
     </transition>
 
 
@@ -41,6 +43,7 @@
   import OrderGoodsListItem from './childcomponents/OrderGoodsListItem'
   import OrderPayMethod from './childcomponents/OrderPayMethod'
   import OrderCoupon from './childcomponents/OrderCoupon'
+  import { mapState, mapMutations } from 'vuex'
 
   export default {
     name: "Order",
@@ -58,14 +61,28 @@
         address_phone: '',
         address_text: '请选择收货地址',
         orderGoods: [],
+        totalPrice: 0,
         isShowGoodsList: false
       }
     },
+    computed: {
+      ...mapState(['chosenAddress'])
+    },
     created() {
       this.orderGoods = this.$route.query.orderGoodsList
-      // console.log(this.orderGoods);
-    },
+      this.totalPrice = this.$route.query.totalPrice.replace('¥','')
 
+      if(Object.keys(this.chosenAddress).length !== 0) {
+        this.address_type = 'edit'
+        this.address_name = this.chosenAddress.name
+        this.address_phone = this.chosenAddress.tel
+      }
+    },
+    activated() {
+      //从购物车过来执行了，从我的地址过来并没有执行，是因为子路由的关系还是因为router.back
+      console.log(this.chosenAddress);
+
+    },
     methods: {
       chooseAddress() {
         this.$router.push('/order/myAddress')
@@ -75,6 +92,16 @@
       },
       onSubmit() {
 
+      }
+    },
+    watch:{
+      $route( to , from ){
+        console.log( to , from )
+        if(to.name === 'order' && from.name === 'myAddress') {
+          this.address_type = 'edit'
+          this.address_name = this.chosenAddress.name
+          this.address_phone = this.chosenAddress.tel
+        }
       }
     }
   }

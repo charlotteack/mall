@@ -1,8 +1,9 @@
 import {require} from "./require";
 
-export function getUserInfo(params) {
+export function updateUserInfo(params) {
   return require({
-    url: '',
-    params: params
+    url: '/profile/update',
+    params: params,
+    method: 'post'
   })
 }

@@ -2,7 +2,7 @@
   <div id="profileinfo">
     <nav-bar class="profile-nav"><div slot="center">个人中心</div></nav-bar>
 
-    <user-info :username='username' :sex='sex' :createTime='createTime'>
+    <user-info :username='this.userInfo.userName' :sex='this.userInfo.sex' :createTime='createTime' :avatur="this.userInfo.userImage">
 
     </user-info>
 
@@ -20,7 +20,8 @@
   import UserInfo from './childcomponents/UserInfo'
   import UserGoodState from './childcomponents/UserGoodState'
   import UserService from './childcomponents/UserService'
-  import {getUserInfo} from 'network/profile'
+  import { mapState } from 'vuex'
+  import {formatDate} from "@/common/utils";
   export default {
     name: "ProfileInfo",
     components: {
@@ -31,22 +32,29 @@
     },
     data() {
       return {
-        username: 'xuezhongsongtan',
-        avatur: '',
-        sex: '女',
-        createTime: '2020年5月23日'
+        // username: 'xuezhongsongtan',
+        // avatur: '',
+        // sex: '女',
+        // createTime: '2020年5月23日'
       }
 
     },
-    methods: {
-      getUserInfo() {
-        getUserInfo().then(res => {
-          this.username = res.data.username,
-            this.avatur = res.data.avatur,
-            this.sex = res.data.sex,
-            this.createTime = res.data.createTime
-        })
+    computed: {
+      ...mapState(['userInfo']),
+      createTime() {
+        let date =new Date(this.userInfo.uid)
+        return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
       }
+    },
+    methods: {
+      // getUserInfo() {
+      //   getUserInfo().then(res => {
+      //     this.username = res.data.username,
+      //       this.avatur = res.data.avatur,
+      //       this.sex = res.data.sex,
+      //       this.createTime = res.data.createTime
+      //   })
+      // }
     }
   }
 </script>

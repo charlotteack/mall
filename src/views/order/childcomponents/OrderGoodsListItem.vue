@@ -8,14 +8,14 @@
       <div class="item-desc">商品描述： {{itemInfo.desc}}</div>
       <div class="info-bottom">
         <div class="item-price left">¥{{itemInfo.price}}</div>
-        <div class="item-count right">x{{itemInfo.selectedNum}}</div>
+        <div class="item-count right">x{{itemInfo.count}}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import {regFenToYuan} from 'common/utils'
+
   export default {
     name: "OrderGoodsListItem",
     props: {
@@ -25,9 +25,6 @@
           return {}
         }
       }
-    },
-    created() {
-      this.itemInfo.price = regFenToYuan(this.itemInfo.price)
     }
   }
 </script>

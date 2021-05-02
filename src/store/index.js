@@ -9,7 +9,10 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-  cartList: []
+  userInfo: {},
+  cartList: [],
+  shoppingAddress: [],
+  chosenAddress: {}
 }
 
 export default new Vuex.Store({

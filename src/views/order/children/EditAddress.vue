@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
   import OrderNavBar from "../childcomponents/OrderNavBar";
-  // import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState } from 'vuex'
   import areaList from 'assets/js/area.js'
 
   export default {
@@ -29,27 +29,20 @@
     },
     mounted () {
       // 处理路由传过来的数据
-      // this.addressInfo = this.$route.params.content;
+      this.addressInfo = this.$route.params.content;
     },
     components: {
       OrderNavBar
     },
     methods: {
-      // ...mapMutations(['ADD_USER_SHOPPING_ADDRESS', 'DELETE_USER_SHOPPING_ADDRESS', 'CHANGE_USER_SHOPPING_ADDRESS']),
-      // 1.返回上级界面
-      // 2. 保存
+      ...mapMutations([ 'delete_user_shopping_address', 'change_user_shopping_address']),
       onSave (content) {
-        // let id = content.id;
-        // content['address'] = content.province + content.city + content.county + content.addressDetail;
-        // this.CHANGE_USER_SHOPPING_ADDRESS({
-        //   id, content
-        // });
+        content['address'] = content.province + content.city + content.county + content.addressDetail;
+        this.change_user_shopping_address(content);
         this.$router.back();
       },
-      // 删除
       onDelete (content) {
-        // let id = content.id;
-        // this.DELETE_USER_SHOPPING_ADDRESS({ id });
+        this.delete_user_shopping_address(content.id);
         this.$router.back();
       }
     }

@@ -12,7 +12,7 @@
               v-for="(item,index) in orderGoods"
               :key="index">
             <van-image
-              fit="cover" height="5rem" width="5rem"
+              fit="cover" height="5rem" width="5rem" style="padding: 5px"
               :src="item.imgUrl"
             />
           </li>
@@ -52,7 +52,7 @@
     methods: {
       initScroll () {
         if (!this.productImageScroll) {
-          this.$refs.imageWrapper.style.width = (this.$refs.subWrapper.length * 60) + 'px';
+          this.$refs.imageWrapper.style.width = (this.$refs.subWrapper.length * 80) + 'px';
           this.productImageScroll = new BScroll(this.$refs.productImageWrapper, {
             probeType: 3,
             startX: 0,

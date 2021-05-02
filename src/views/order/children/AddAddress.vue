@@ -13,7 +13,7 @@
 
 <script type="text/javascript">
   import OrderNavBar from "../childcomponents/OrderNavBar";
-  // import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState } from 'vuex'
   import areaList from 'assets/js/area.js'
   export default {
     data () {
@@ -25,25 +25,17 @@
     components: {
       OrderNavBar
     },
+    computed: {
+      ...mapState(['shoppingAddress'])
+    },
     methods: {
-      // ...mapMutations(['ADD_USER_SHOPPING_ADDRESS']),
-      // 1.返回上级界面
-      // 2. 保存
+      ...mapMutations(['add_user_shopping_address']),
       onSave (content) {
-        // let addressID = this.addressID().toString();
-        // content['id'] = addressID;
-        // content['address'] = content.province + content.city + content.county + content.addressDetail;
-        // this.ADD_USER_SHOPPING_ADDRESS({
-        //   addressID,
-        //   content
-        // });
+        content['id'] = this.shoppingAddress.length;
+        content['address'] = content.province + content.city + content.county + content.addressDetail;
+        this.add_user_shopping_address(content);
         this.$router.back();
       },
-      // 生成不重复的id
-      addressID () {
-        var lastUuid = 0;
-        return (new Date()).getTime() * 1000 + (lastUuid++) % 1000;
-      }
     }
   }
 </script>

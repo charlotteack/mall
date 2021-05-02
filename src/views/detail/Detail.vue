@@ -56,9 +56,10 @@
 
   import {getDetail,GoodsDetail,Shop,GoodsParam,getRecommend} from "network/detail";
   import {deBounce} from "../../common/utils";
+  import {regFenToYuan} from 'common/utils'
   import {goodItemListenerMixin, backTopMixin} from "common/mixins";
 
-  import { mapActions } from 'vuex'
+  import { mapActions , mapState} from 'vuex'
 
   export default {
     name: "Detail",
@@ -99,6 +100,9 @@
         },
         initialSku:{}
       }
+    },
+    computed:{
+      ...mapState(['userInfo']),
     },
     mixins: [goodItemListenerMixin, backTopMixin],
     created() {
@@ -246,43 +250,39 @@
       addToCart() {
         this.isShowSku = !this.isShowSku
         this.btnType = 'AddToCart'
-        const  product = {}
-        product.image = this.topImages[0]
-        product.title = this.goodsDetail.title
-        product.desc = this.goodsDetail.desc
-        product.price = this.goodsDetail.realPrice
-        product.iid = this.iid
-        // this.$store.dispatch('addCart', product).then( res => {
-        //   this.$toast.show(res, 2000)
-        // })
-
-        // 利用vuex的映射
-        this.addCart(product).then(res => {
-          this.$toast.show(res, 2000)
-        })
       },
 
       okBtnClick(skuData) {
         // console.log(skuData)
         //在这里验证登录情况后再判断
+        const  product = {}
+        product.imgUrl = skuData.selectedSkuComb.imgUrl
+        product.title = this.goodsDetail.title
+        product.desc = `颜色款式：${skuData.selectedSkuComb.styleId}  尺码：${skuData.selectedSkuComb.sizeId}`
+        product.price = regFenToYuan(skuData.selectedSkuComb.price)
+        product.iid = this.iid
+        product.count = skuData.selectedNum
         if(this.btnType === 'quicklyBuy') {
           //整理数据，因为进入订单有两种，一个是这里直接购买，还有一种是到购物里面结算
           //为方便起见，要保证传入订单的数据格式一样
           let orderGoodsList = []
-          orderGoodsList.push({
-            iid: this.iid,
-            title: this.goodsDetail.title,
-            desc: `颜色款式：${skuData.selectedSkuComb.styleId}  尺码：${skuData.selectedSkuComb.sizeId}`,
-            price: skuData.selectedSkuComb.price,
-            imgUrl: skuData.selectedSkuComb.imgUrl,
-            selectedNum: skuData.selectedNum
-          })
+          orderGoodsList.push(product)
           this.$router.push({
             path: '/order',
             query: {orderGoodsList}
           })
         }else {
-          //加入购物车，也利用要vuex，暂时还是放在方面，先不管
+          // this.$store.dispatch('addCart', product).then( res => {
+          //   this.$toast.show(res, 2000)
+          // })
+          if ( Object.keys(this.userInfo).length !== 0) {
+            this.addCart(product).then(res => {
+              this.$toast.show(res, 2000)
+            })
+          }else{
+            this.$router.push('/login')
+          }
+
         }
       },
       quicklyBuy() {

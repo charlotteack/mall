@@ -2,12 +2,12 @@
   <div id="myAddress">
     <OrderNavBar class="my-address-nav" title="我的地址"></OrderNavBar>
 
-    <div v-show="false">
+    <div v-show="isEmpty">
       <van-empty description="还没有地址呢，添加一个叭~" />
     </div>
 
     <van-address-list v-model="chosenAddressId"
-                      :list="list"
+                      :list="shoppingAddress"
                       @add="onAdd"
                       @edit="onEdit"
                       @select="onBackAddress">
@@ -21,7 +21,7 @@
 </template>
 <script type="text/javascript">
   import OrderNavBar from "../childcomponents/OrderNavBar";
-  // import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
   // import { getLocalStore } from './../../../config/global.js'
   // 引入发布订阅
   // import { CHOOSE_USER_ADDRESS } from './../../../config/pubsub_type.js'
@@ -30,36 +30,35 @@
   export default {
     data () {
       return {
-        chosenAddressId: '1',
-        list: [
-          {
-            id: '1',
-            name: '张三',
-            tel: '13000000000',
-            address: '浙江省杭州市西湖区文三路 138 号东方通信大厦 7 楼 501 室',
-            isDefault: true,
-          },
-          {
-            id: '2',
-            name: '李四',
-            tel: '1310000000',
-            address: '浙江省杭州市拱墅区莫干山路 50 号',
-          },
-        ],
+        chosenAddressId: null,
+        addressList: [],
       }
     },
     computed: {
+      ...mapState(['shoppingAddress','chosenAddress']),
+      isEmpty: {
+        get: function () {
+          return this.shoppingAddress.length===0
+        },
+        set: function () {
 
-      // ...mapState(['shippingAddress']),
+        }
+      },
     },
     mounted () {
-      // this.INIT_USER_SHOPPING_ADDRESS();
+      this.init_user_shopping_address();
     },
     components: {
       OrderNavBar
     },
+    // activated() {
+    //   console.log('hhh');
+    //   if(Object.keys(this.chosenAddress).length !== 0) {
+    //     this.chosenAddressId = this.chosenAddress.id
+    //   }
+    // },
     methods: {
-      // ...mapMutations(['INIT_USER_SHOPPING_ADDRESS']),
+      ...mapMutations(['init_user_shopping_address','update_chosen_address']),
       backClick () {
         this.$router.back();
       },
@@ -70,9 +69,8 @@
         this.$router.push({ name: 'editAddress', params: { content: item } });
       },
       onBackAddress (item, index) {
-        // 发布通知到订单界面修改值
-        // PubSub.publish(CHOOSE_USER_ADDRESS, item);
-        // 返回到上一个界面
+        this.update_chosen_address(item)
+        this.chosenAddressId = this.chosenAddress.id
         this.$router.back();
       }
     }

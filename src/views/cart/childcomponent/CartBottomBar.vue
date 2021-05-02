@@ -64,7 +64,10 @@
         if(this.checkLength === 0){
           this.$toast.show('请选择购买商品',2000)
         }else{
-          this.$toast.show('购买成功',2000)
+          this.$router.push({
+            path: '/order',
+            query: {orderGoodsList:this.cartList,totalPrice:this.totalPrice}
+          })
         }
       }
     }

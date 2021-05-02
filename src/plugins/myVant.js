@@ -26,10 +26,8 @@ import {
 Vue.use(SubmitBar);
 
 // 5.提示框
-import {
-  Dialog
-} from 'vant';
-Vue.use(Dialog)
+import { Dialog } from 'vant';
+Vue.use(Dialog);
 
 // 6.单元格
 import {
@@ -144,3 +142,7 @@ Vue.use(VanImage);
 //25
 import { Empty } from 'vant';
 Vue.use(Empty);
+
+//26
+import { Divider } from 'vant';
+Vue.use(Divider);

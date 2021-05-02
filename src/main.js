@@ -7,7 +7,7 @@ import toast from 'components/common/toast'
 import FastClick from 'fastclick'
 import VueLazyLoad from 'vue-lazyload'
 
-import 'common/myVant'
+import './plugins/myVant'
 
 Vue.config.productionTip = false
 
@@ -19,6 +19,20 @@ FastClick.attach(document.body)
 //图片的懒加载
 Vue.use(VueLazyLoad, {
   loading: require('./assets/img/common/xr.jpeg')
+})
+//路由拦截
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    if ( Object.keys(store.state.userInfo).length !== 0) {
+      next()
+    } else {
+      next({
+        path: '/login'
+      })
+    }
+  } else {
+    next()
+  }
 })
 
 

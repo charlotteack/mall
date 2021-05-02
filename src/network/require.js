@@ -7,7 +7,7 @@ export function require(config) {
     baseURL: 'http://localhost:3000',
 
     // baseURL: 'http://106.54.54.237:8000/api/wh',
-    timeout: 5000
+    timeout: 5000,
   })
 
   //请求拦截器
