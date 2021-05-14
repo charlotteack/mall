@@ -44,6 +44,7 @@
       },
       createTime: {
         type: String,
+        default: '无'
       }
     },
     methods: {

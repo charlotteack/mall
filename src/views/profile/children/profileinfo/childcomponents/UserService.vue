@@ -1,7 +1,7 @@
 <template>
   <div id="userService">
     <van-cell-group class="user-group">
-      <van-cell icon="records" title="全部订单" is-link url="/allorder"/>
+      <van-cell icon="records" title="全部订单" is-link to="/profile/order/1"/>
     </van-cell-group>
 
     <van-cell-group>

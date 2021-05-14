@@ -15,7 +15,7 @@
     name: "ContentTab",
     data() {
       return {
-        currentIndex: 0
+        currentIndex: this.firstIndex
       }
     },
     props: {
@@ -26,10 +26,16 @@
           return []
         }
       },
+      firstIndex: {
+        type: Number,
+        default() {
+          return 0
+        }
+      }
     },
     methods: {
       onClick(name, title) {
-        this.$emit('categoryTabChange', title)
+        this.$emit('tabChange', title)
       },
     },
   }

@@ -101,7 +101,8 @@
 <script>
   import {getPhoneCaptcha, registerByPhone, loginByPhone} from 'network/login'
   import { Dialog } from 'vant'
-  import { mapActions } from 'vuex'
+  import { mapActions, mapMutations} from 'vuex'
+  import {getAllOrder} from 'network/order'
   export default {
     name: "Login",
     data() {
@@ -137,6 +138,7 @@
     },
     methods: {
       ...mapActions(['saveUserInfo']),
+      ...mapMutations(['update_order_list']),
       //关闭按钮
       close () {
         this.$router.back();
@@ -167,6 +169,7 @@
         } else {
           loginByPhone(this.login_phoneNumber, this.login_pwd).then(res => {
             if(res.state === 0) {
+              //保存用户基本信息
               this.saveUserInfo({
                 phoneNumber: this.login_phoneNumber,
                 userName: res.userInfo.userName,
@@ -174,7 +177,12 @@
                 uid: res.userInfo.uid,
                 userImage: res.userInfo.userImage
               })
-              this.$router.back();
+              //获取后台订单信息，存到vuex里面
+              getAllOrder(this.login_phoneNumber).then(res => {
+                this.update_order_list(res.userOrderList)
+                //返回
+                this.$router.back();
+              })
             } else if(res.state ===1) {
               this.$toast.show('该手机号未注册，请先完成注册',1000)
             } else if(res.state ===2) {

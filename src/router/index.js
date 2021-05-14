@@ -12,6 +12,7 @@ const Cart = () => import('views/cart/Cart')
 const Profile = () => import('views/profile/Profile')
 const ProfileInfo = () => import('views/profile/children/profileinfo/ProfileInfo')
 const UpdateProfile = () => import('views/profile/children/updateprofile/UpdateProfile')
+const MyOrders = () => import('views/profile/children/myorders/MyOrders')
 
 const Order = () => import('views/order/Order')
 const MyAddress = () => import('views/order/children/MyAddress');
@@ -65,7 +66,14 @@ const routes = [
         meta: {
           requireAuth: true
         }
-      }
+      },
+      {
+        path: 'order/:title',
+        component: MyOrders,
+        meta: {
+          requireAuth: true
+        }
+      },
     ]
   },
   {

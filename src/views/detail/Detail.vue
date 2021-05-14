@@ -269,7 +269,7 @@
           orderGoodsList.push(product)
           this.$router.push({
             path: '/order',
-            query: {orderGoodsList}
+            query: {orderGoodsList: orderGoodsList,totalPrice: product.price}
           })
         }else {
           // this.$store.dispatch('addCart', product).then( res => {

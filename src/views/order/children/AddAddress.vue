@@ -4,7 +4,6 @@
 
     <van-address-edit :area-list="areaList"
                       show-postal
-                      show-set-default
                       show-search-result
                       :search-result="searchResult"
                       @save="onSave"/>
@@ -50,8 +49,10 @@
     z-index: 99999;
   }
 
-  .van-address-edit__buttons .van-button {
-    background: #f69;
+  >>>.van-button--danger {
+    color: #fff;
+    background-color: #f69;
+    border: 1px solid #f69;
   }
 
 </style>

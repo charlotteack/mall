@@ -31,8 +31,12 @@ export default {
       let index = context.state.cartList.findIndex(item => {
         return item.iid = payload
       })
-      context.commit(types.DELETE_PRODUCT, index)
-      resolve('成功删除')
+      if(index !== -1){
+        //在购物车删除时肯定找得到，但是下单后要删除（直接购买下单时找不到）
+        context.commit(types.DELETE_PRODUCT, index)
+        resolve('成功删除')
+      }
+
     })
   },
 

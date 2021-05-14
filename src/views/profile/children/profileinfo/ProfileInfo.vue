@@ -22,6 +22,7 @@
   import UserService from './childcomponents/UserService'
   import { mapState } from 'vuex'
   import {formatDate} from "@/common/utils";
+
   export default {
     name: "ProfileInfo",
     components: {
@@ -35,15 +36,19 @@
         // username: 'xuezhongsongtan',
         // avatur: '',
         // sex: '女',
-        // createTime: '2020年5月23日'
+        // createTime: '2021年4月23日'
       }
 
     },
     computed: {
       ...mapState(['userInfo']),
       createTime() {
-        let date =new Date(this.userInfo.uid)
-        return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+        if(Object.keys(this.userInfo).length !== 0){
+          let date =new Date(this.userInfo.uid)
+          return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+        }else{
+          return '无'
+        }
       }
     },
     methods: {
@@ -55,6 +60,11 @@
       //       this.createTime = res.data.createTime
       //   })
       // }
+
+      getCurrentAllOrders(phone) {
+        //拿到后台数据更新Vuex
+
+      },
     }
   }
 </script>

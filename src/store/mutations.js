@@ -8,6 +8,7 @@ export default {
   },
   [types.ADD_TO_CART](state, payload) {
     state.cartList.push(payload)
+    // state.cartList = [...state.cartList,payload]
   },
   [types.SUBTRACT_COUNTER](state, index) {
     state.cartList[index].count--
@@ -50,5 +51,26 @@ export default {
   [types.UPDATE_CHOSEN_ADDRESS](state, payload) {
     state.chosenAddress = payload
   },
+  //订单相关
+  [types.ADD_UNPAY_ORDER](state,payload) {
+    state.orderList.unPay = [...state.orderList.unPay, payload]
+    setLocalStore('orderList', state.orderList)
+  },
+  [types.ADD_UNTRANSPORT_ORDER](state,payload) {
+    state.orderList.unTransport = [...state.orderList.unTransport, payload]
+    setLocalStore('orderList', state.orderList)
+  },
+  [types.ADD_UNGET_ORDER](state,payload) {
+    state.orderList.unGet = [...state.orderList.unGet, payload]
+    setLocalStore('orderList', state.orderList)
+  },
+  [types.ADD_UNCOMMENT_ORDER](state,payload) {
+    state.orderList.unComment = [...state.orderList.unComment, payload]
+    setLocalStore('orderList', state.orderList)
+  },
+  [types.UPDATE_ORDER_LIST](state,payload) {
+    state.orderList = payload
+    setLocalStore('orderList', state.orderList)
+  }
 
 }

@@ -58,4 +58,10 @@
     background-color: #f5f5f5;
     z-index: 999;
   }
+
+  >>>.van-button--danger {
+    color: #fff;
+    background-color: #f69;
+    border: 1px solid #f69;
+  }
 </style>

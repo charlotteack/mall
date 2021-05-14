@@ -12,7 +12,13 @@ const state = {
   userInfo: {},
   cartList: [],
   shoppingAddress: [],
-  chosenAddress: {}
+  chosenAddress: {},
+  orderList: {
+    unPay: [],
+    unTransport: [],
+    unGet: [],
+    unComment: []
+  }
 }
 
 export default new Vuex.Store({

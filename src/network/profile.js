@@ -7,3 +7,11 @@ export function updateUserInfo(params) {
     method: 'post'
   })
 }
+
+export function uploadImage(data) {
+  return require({
+    url: '/profile/upload',
+    data: data,
+    method: 'post',
+  })
+}

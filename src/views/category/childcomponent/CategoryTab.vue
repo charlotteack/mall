@@ -1,6 +1,6 @@
 <template>
   <div>
-    <content-tab :tabTitles="tabTitles" @categoryTabChange="categoryTabChange">
+    <content-tab :tabTitles="tabTitles" @tabChange="categoryTabChange">
       <!--<van-grid :column-num="2">-->
         <!--<van-grid-item v-for="(good, index) in goodsList" :text="good.clothName" :key="index">-->
           <!--<van-image :src="good.imgURL" height="50" width="50"/>-->

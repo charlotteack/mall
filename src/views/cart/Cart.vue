@@ -4,6 +4,10 @@
       <div slot="center">购物车({{cartLength}})</div>
     </nav-bar>
 
+    <div v-show="isEmpty">
+      <van-empty description="还没有商品呢，快去逛逛叭~" />
+    </div>
+
     <cart-list></cart-list>
     <cart-bottom-bar></cart-bottom-bar>
 
@@ -31,7 +35,15 @@
       CartBottomBar
     },
     computed: {
-      ...mapGetters(['cartLength'])
+      ...mapGetters(['cartLength']),
+      isEmpty: {
+        get: function () {
+          return this.cartLength === 0
+        },
+        set: function () {
+
+        }
+      },
     }
   }
 </script>

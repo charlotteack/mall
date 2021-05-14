@@ -16,7 +16,7 @@
         v-model="showList"
         round
         position="bottom"
-        style="height: 90%; padding-top: 4px;"
+        style="height: 80%; padding-top: 4px;"
       >
         <van-coupon-list
           :coupons="coupons"
@@ -92,6 +92,9 @@
       onChange(index) {
         this.showList = false;
         this.chosenCoupon = index;
+        if(this.coupons[this.chosenCoupon].valueDesc) {
+          this.$emit('changeCouponMoney',Number(this.coupons[this.chosenCoupon].valueDesc))
+        }
       },
       onExchange(code) {
         this.coupons.push(coupon);
@@ -101,5 +104,9 @@
 </script>
 
 <style scoped>
-
+  >>>.van-coupon-list__close{
+    color: #fff;
+    background-color: #f69;
+    border: 1px solid #f69;
+  }
 </style>
